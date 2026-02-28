@@ -34,7 +34,6 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public void addProduct(Product p) throws Exception {
-        // Xử lý logic cấp ID tự động nếu ID null
         if (p.getId() == null) {
             currentId = currentId.add(BigInteger.ONE);
             p.setId(currentId);
@@ -51,7 +50,7 @@ public class ProductServiceImpl implements IProductService {
 
         p.setCreatedAt(LocalDateTime.now());
         listProducts.add(p);
-        saveToCSV(); // Lưu file ngay sau khi thêm
+        saveToCSV();
     }
 
     @Override
@@ -73,7 +72,7 @@ public class ProductServiceImpl implements IProductService {
         if (!found) {
             throw new Exception("Không tìm thấy sản phẩm để cập nhật!");
         }
-        saveToCSV(); // Lưu file ngay sau khi sửa
+        saveToCSV();
     }
 
     @Override
@@ -82,10 +81,8 @@ public class ProductServiceImpl implements IProductService {
         if (!removed) {
             throw new Exception("Không tìm thấy ID sản phẩm để xóa!");
         }
-        saveToCSV(); // Lưu file ngay sau khi xóa
+        saveToCSV();
     }
-
-    // --- Các hàm Private phục vụ việc đọc/ghi CSV ---
 
     private void loadFromCSV() {
         File file = new File(FILE_PATH);

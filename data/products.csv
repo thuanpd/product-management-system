@@ -1,2 +1,3 @@
 id,productCode,name,description,category,brand,active,createdAt,updatedAt
 1,PA001,Lenovo yoga,App Lenovo yoga,laptop,Lenovo,true,2026-02-28T10:34:59.6171258,
+2,PA002,Asus Zenbook,Asus Zenbook 512GB,laptop,Asus,true,2026-02-28T13:22:51.7776693,
