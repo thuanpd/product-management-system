@@ -1,25 +1,32 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigInteger;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import model.Product;
 
 public class ProductView extends JFrame {
-    // Các component cho Product Entity
     private JTextField txtId, txtProductCode, txtName, txtDescription, txtCategory, txtBrand;
     private JCheckBox chkActive;
-    private JButton btnAdd, btnEdit, btnDelete, btnClear, btnManageSku;
+
+    private JButton btnAdd, btnEdit, btnDelete, btnClear;
+
     private JTable productTable;
     private DefaultTableModel tableModel;
 
+    private ActionListener detailButtonListener;
+
     public ProductView() {
-        super("Quản Lý Sản Phẩm (Master) - MVC");
-        this.setSize(900, 600); // Tăng kích thước vì có nhiều trường hơn
+        super("Quản Lý Sản Phẩm");
+        this.setSize(1000, 600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
 
@@ -27,7 +34,6 @@ public class ProductView extends JFrame {
     }
 
     private void initUI() {
-        // 1. Panel nhập liệu (Phía trên) - Tăng thành 7 hàng
         JPanel inputPanel = new JPanel(new GridLayout(7, 2, 10, 10));
         inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
@@ -57,61 +63,101 @@ public class ProductView extends JFrame {
 
         inputPanel.add(new JLabel("Trạng thái:"));
         chkActive = new JCheckBox("Đang hoạt động");
-        chkActive.setSelected(true); // Mặc định là true theo model
+        chkActive.setSelected(true);
         inputPanel.add(chkActive);
 
-        // 2. Panel chức năng (Các nút bấm)
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
         btnAdd = new JButton("Thêm");
         btnEdit = new JButton("Sửa");
         btnDelete = new JButton("Xóa");
         btnClear = new JButton("Reset Form");
 
-        // Nút gợi ý cho việc mở quản lý SKU (sẽ code ở View khác)
-        btnManageSku = new JButton("Quản Lý SKU/Giá");
-        btnManageSku.setToolTipText("Chọn 1 sản phẩm ở bảng dưới rồi bấm nút này");
-
         buttonPanel.add(btnAdd);
         buttonPanel.add(btnEdit);
         buttonPanel.add(btnDelete);
         buttonPanel.add(btnClear);
-        buttonPanel.add(new JSeparator(SwingConstants.VERTICAL));
-        buttonPanel.add(btnManageSku);
 
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.add(inputPanel, BorderLayout.CENTER);
         topPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        // 3. Bảng hiển thị dữ liệu (Phía dưới)
-        String[] columnNames = {"ID", "Mã SP", "Tên Sản Phẩm", "Danh Mục", "Thương Hiệu", "Hoạt động"};
+        String[] columnNames = {"ID", "Mã SP", "Tên Sản Phẩm", "Danh Mục", "Thương Hiệu", "Hoạt động", "Hành động"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Không cho sửa trực tiếp trên bảng
+                return column == 6;
             }
         };
         productTable = new JTable(tableModel);
 
-        // Chỉnh kích thước cột cho đẹp
-        productTable.getColumnModel().getColumn(0).setPreferredWidth(50);
+        productTable.getColumnModel().getColumn(0).setPreferredWidth(40);
         productTable.getColumnModel().getColumn(2).setPreferredWidth(200);
+        productTable.getColumnModel().getColumn(6).setPreferredWidth(120);
+
+        productTable.getColumnModel().getColumn(6).setCellRenderer(new ButtonRenderer());
+        productTable.getColumnModel().getColumn(6).setCellEditor(new ButtonEditor(new JCheckBox()));
 
         JScrollPane scrollPane = new JScrollPane(productTable);
         scrollPane.setBorder(BorderFactory.createTitledBorder("Danh Sách Sản Phẩm"));
 
-        // Thêm vào JFrame
         this.setLayout(new BorderLayout());
         this.add(topPanel, BorderLayout.NORTH);
         this.add(scrollPane, BorderLayout.CENTER);
     }
 
-    // --- Các hàm lấy/đẩy dữ liệu từ Form ---
+    class ButtonRenderer extends JButton implements TableCellRenderer {
+        public ButtonRenderer() {
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                                                       boolean isSelected, boolean hasFocus, int row, int column) {
+            setText("Xem SKU/Giá");
+            return this;
+        }
+    }
+
+    class ButtonEditor extends DefaultCellEditor {
+        protected JButton button;
+        private int clickedRow;
+
+        public ButtonEditor(JCheckBox checkBox) {
+            super(checkBox);
+            button = new JButton();
+            button.setOpaque(true);
+
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    fireEditingStopped();
+
+                    if (detailButtonListener != null) {
+                        ActionEvent event = new ActionEvent(button, ActionEvent.ACTION_PERFORMED, String.valueOf(clickedRow));
+                        detailButtonListener.actionPerformed(event);
+                    }
+                }
+            });
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value,
+                                                     boolean isSelected, int row, int column) {
+            this.clickedRow = row;
+            button.setText("Xem SKU/Giá");
+            return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return "Xem SKU/Giá";
+        }
+    }
 
     public Product getProductFromForm() {
         try {
             Product p = new Product();
 
-            // Xử lý ID (BigInteger)
             String idStr = txtId.getText().trim();
             if (!idStr.isEmpty()) {
                 p.setId(new BigInteger(idStr));
@@ -124,7 +170,6 @@ public class ProductView extends JFrame {
             p.setBrand(txtBrand.getText().trim());
             p.setActive(chkActive.isSelected());
 
-            // Validate cơ bản
             if (p.getProductCode().isEmpty() || p.getName().isEmpty()) {
                 showMessage("Mã sản phẩm và Tên sản phẩm không được để trống!");
                 return null;
@@ -146,7 +191,7 @@ public class ProductView extends JFrame {
         txtBrand.setText(p.getBrand());
         chkActive.setSelected(p.isActive());
 
-        txtId.setEditable(false); // ID hệ thống thường không cho sửa
+        txtId.setEditable(false);
     }
 
     public void clearForm() {
@@ -162,8 +207,6 @@ public class ProductView extends JFrame {
         productTable.clearSelection();
     }
 
-    // --- Các hàm thao tác với JTable ---
-
     public void addRow(Product p) {
         tableModel.addRow(new Object[]{
                 p.getId(),
@@ -171,7 +214,8 @@ public class ProductView extends JFrame {
                 p.getName(),
                 p.getCategory(),
                 p.getBrand(),
-                p.isActive() ? "Có" : "Không"
+                p.isActive() ? "Có" : "Không",
+                "Xem"
         });
     }
 
@@ -200,21 +244,27 @@ public class ProductView extends JFrame {
         return null;
     }
 
+    public BigInteger getIdAtRow(int row) {
+        if (row >= 0 && row < productTable.getRowCount()) {
+            return new BigInteger(productTable.getValueAt(row, 0).toString());
+        }
+        return null;
+    }
+
     public void showMessage(String message) {
         JOptionPane.showMessageDialog(this, message);
     }
-
-    // --- Đăng ký sự kiện cho Controller ---
 
     public void addAddListener(ActionListener log) { btnAdd.addActionListener(log); }
     public void addEditListener(ActionListener log) { btnEdit.addActionListener(log); }
     public void addDeleteListener(ActionListener log) { btnDelete.addActionListener(log); }
     public void addClearListener(ActionListener log) { btnClear.addActionListener(log); }
 
-    // Nút này dùng để Controller bắt sự kiện mở form Quản lý SKU
-    public void addManageSkuListener(ActionListener log) { btnManageSku.addActionListener(log); }
-
     public void addListSelectionListener(javax.swing.event.ListSelectionListener listener) {
         productTable.getSelectionModel().addListSelectionListener(listener);
+    }
+
+    public void addDetailInTableListener(ActionListener listener) {
+        this.detailButtonListener = listener;
     }
 }

@@ -1,0 +1,4 @@
+id,skuCode,color,size,material,quantityInStock,weight,barcode,active,productId
+1,0001,Xanh,3.6,kimg Loai,150,23.0,000123,true,1
+2,0002,Đen,2x5,Kim Loai,23,2.5,000021,true,1
+3,0002,Đen,2x6,Nhựa,12,2.6,000032,true,2
