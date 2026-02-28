@@ -1,3 +1,5 @@
+package model;
+
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,7 +12,6 @@ public class Product {
     private String description;
     private String category;
     private String brand;
-    private ProductStatus status;
     private boolean active;
 
     private LocalDateTime createdAt;
@@ -75,14 +76,6 @@ public class Product {
 
     public void setBrand(String brand) {
         this.brand = brand;
-    }
-
-    public ProductStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ProductStatus status) {
-        this.status = status;
     }
 
     public boolean isActive() {

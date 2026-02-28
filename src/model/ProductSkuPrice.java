@@ -1,3 +1,5 @@
+package model;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -8,7 +10,6 @@ public class ProductSkuPrice {
     private BigDecimal price;
     private BigDecimal originalPrice;
     private String currency;
-    private PriceType priceType;
 
     private LocalDateTime startDate;
     private LocalDateTime endDate;
@@ -58,14 +59,6 @@ public class ProductSkuPrice {
 
     public void setCurrency(String currency) {
         this.currency = currency;
-    }
-
-    public PriceType getPriceType() {
-        return priceType;
-    }
-
-    public void setPriceType(PriceType priceType) {
-        this.priceType = priceType;
     }
 
     public LocalDateTime getStartDate() {
