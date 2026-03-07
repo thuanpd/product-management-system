@@ -25,12 +25,29 @@ public class ProductSku {
     private List<ProductSkuPrice> prices;
 
     public ProductSku() {
+        this.createdAt = LocalDateTime.now();
+        this.active = true;
     }
 
     public ProductSku(BigInteger id, String skuCode, Product product) {
-        this.id = id;
-        this.skuCode = skuCode;
-        this.product = product;
+        setId(id);
+        setSkuCode(skuCode);
+        setProduct(product);
+        this.createdAt = LocalDateTime.now();
+        this.active = true;
+    }
+
+    public ProductSku(BigInteger id, String skuCode, String color, String size, String material,
+                      int quantityInStock, double weight, String barcode, Product product) {
+        setId(id);
+        setSkuCode(skuCode);
+        setColor(color);
+        setSize(size);
+        setMaterial(material);
+        setQuantityInStock(quantityInStock);
+        setWeight(weight);
+        setBarcode(barcode);
+        setProduct(product);
         this.createdAt = LocalDateTime.now();
         this.active = true;
     }
@@ -40,6 +57,9 @@ public class ProductSku {
     }
 
     public void setId(BigInteger id) {
+        if (id == null) {
+            throw new IllegalArgumentException("SKU ID cannot be null");
+        }
         this.id = id;
     }
 
@@ -48,7 +68,11 @@ public class ProductSku {
     }
 
     public void setSkuCode(String skuCode) {
-        this.skuCode = skuCode;
+        if (skuCode == null || skuCode.trim().isEmpty()) {
+            throw new IllegalArgumentException("SKU code cannot be empty");
+        }
+        this.skuCode = skuCode.trim();
+        touchUpdateTime();
     }
 
     public String getColor() {
@@ -56,7 +80,8 @@ public class ProductSku {
     }
 
     public void setColor(String color) {
-        this.color = color;
+        this.color = (color != null) ? color.trim() : null;
+        touchUpdateTime();
     }
 
     public String getSize() {
@@ -64,7 +89,8 @@ public class ProductSku {
     }
 
     public void setSize(String size) {
-        this.size = size;
+        this.size = (size != null) ? size.trim() : null;
+        touchUpdateTime();
     }
 
     public String getMaterial() {
@@ -72,7 +98,8 @@ public class ProductSku {
     }
 
     public void setMaterial(String material) {
-        this.material = material;
+        this.material = (material != null) ? material.trim() : null;
+        touchUpdateTime();
     }
 
     public int getQuantityInStock() {
@@ -80,7 +107,11 @@ public class ProductSku {
     }
 
     public void setQuantityInStock(int quantityInStock) {
+        if (quantityInStock < 0) {
+            throw new IllegalArgumentException("Quantity in stock cannot be negative");
+        }
         this.quantityInStock = quantityInStock;
+        touchUpdateTime();
     }
 
     public double getWeight() {
@@ -88,7 +119,11 @@ public class ProductSku {
     }
 
     public void setWeight(double weight) {
+        if (weight < 0) {
+            throw new IllegalArgumentException("Weight cannot be negative");
+        }
         this.weight = weight;
+        touchUpdateTime();
     }
 
     public String getBarcode() {
@@ -96,7 +131,8 @@ public class ProductSku {
     }
 
     public void setBarcode(String barcode) {
-        this.barcode = barcode;
+        this.barcode = (barcode != null) ? barcode.trim() : null;
+        touchUpdateTime();
     }
 
     public boolean isActive() {
@@ -105,6 +141,7 @@ public class ProductSku {
 
     public void setActive(boolean active) {
         this.active = active;
+        touchUpdateTime();
     }
 
     public LocalDateTime getCreatedAt() {
@@ -112,6 +149,9 @@ public class ProductSku {
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
+        if (createdAt == null) {
+            throw new IllegalArgumentException("CreatedAt cannot be null");
+        }
         this.createdAt = createdAt;
     }
 
@@ -128,7 +168,11 @@ public class ProductSku {
     }
 
     public void setProduct(Product product) {
+        if (product == null) {
+            throw new IllegalArgumentException("Product cannot be null for SKU");
+        }
         this.product = product;
+        touchUpdateTime();
     }
 
     public List<ProductSkuPrice> getPrices() {
@@ -137,5 +181,26 @@ public class ProductSku {
 
     public void setPrices(List<ProductSkuPrice> prices) {
         this.prices = prices;
+    }
+
+    private void touchUpdateTime() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @Override
+    public String toString() {
+        return "ProductSku{" +
+                "id=" + id +
+                ", skuCode='" + skuCode + '\'' +
+                ", color='" + color + '\'' +
+                ", size='" + size + '\'' +
+                ", material='" + material + '\'' +
+                ", quantityInStock=" + quantityInStock +
+                ", weight=" + weight +
+                ", barcode='" + barcode + '\'' +
+                ", active=" + active +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }

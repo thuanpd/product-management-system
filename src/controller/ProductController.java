@@ -8,33 +8,34 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import model.Product;
 import service.IProductService;
-import service.ProductServiceImpl; // Đảm bảo import đúng đường dẫn của bạn
-import view.ProductDetailView;   // Thêm import này để mở giao diện Tab Detail
+import service.ProductServiceImpl; // Ensure correct import path
+import view.ProductDetailView;     // Import to open Detail tab UI
 import view.ProductView;
 
 public class ProductController {
     private ProductView view;
-    // Controller CHỈ gọi Interface, không quan tâm bên dưới là CSV hay Database
+    // Controller ONLY calls the interface, not caring if the backend is CSV or Database
     private IProductService productService;
 
     public ProductController(ProductView view) {
         this.view = view;
-        // Khởi tạo Service (Dependency Injection thủ công)
+
+        // Manual Dependency Injection
         this.productService = new ProductServiceImpl();
 
-        // Load dữ liệu lên View
+        // Load data to View
         loadDataToTable();
 
-        // Gắn sự kiện cho các nút thêm/sửa/xóa cơ bản
+        // Register events for add/edit/delete buttons
         this.view.addAddListener(new AddProductListener());
         this.view.addEditListener(new EditProductListener());
         this.view.addDeleteListener(new DeleteProductListener());
         this.view.addClearListener(e -> this.view.clearForm());
 
-        // Gắn sự kiện khi click chọn 1 dòng trên bảng
+        // Event when selecting a row in the table
         this.view.addListSelectionListener(new TableSelectionListener());
 
-        // THÊM MỚI: Gắn sự kiện khi bấm vào nút "Xem SKU/Giá" ở cột Hành động
+        // NEW: Event when clicking "View SKU/Price" button in the action column
         this.view.addDetailInTableListener(new DetailInTableListener());
     }
 
@@ -43,16 +44,16 @@ public class ProductController {
     }
 
     private void loadDataToTable() {
-        // Dọn sạch bảng trước (nếu cần) rồi add lại
+        // Clear table first (if needed) then add rows again
         List<Product> products = productService.getAllProducts();
         for (Product p : products) {
             view.addRow(p);
         }
     }
 
-    // ========================================================================
-    // INNER CLASSES XỬ LÝ SỰ KIỆN CƠ BẢN
-    // ========================================================================
+// ========================================================================
+// INNER CLASSES HANDLE BASIC EVENTS
+// ========================================================================
 
     class AddProductListener implements ActionListener {
         @Override
@@ -60,10 +61,10 @@ public class ProductController {
             Product p = view.getProductFromForm();
             if (p != null) {
                 try {
-                    productService.addProduct(p); // Gọi Service lưu dữ liệu
-                    view.addRow(p);               // Update View thêm dòng mới
+                    productService.addProduct(p); // Call service to save data
+                    view.addRow(p);               // Update view with new row
                     view.clearForm();
-                    view.showMessage("Thêm sản phẩm thành công!");
+                    view.showMessage("Product added successfully!");
                 } catch (Exception ex) {
                     view.showMessage(ex.getMessage());
                 }
@@ -76,19 +77,26 @@ public class ProductController {
         public void actionPerformed(ActionEvent e) {
             Product p = view.getProductFromForm();
             int selectedRow = view.getSelectedRow();
+
             if (selectedRow >= 0 && p != null) {
                 try {
-                    // Phải set đúng ID đang được chọn trên bảng để update
+                    // Must set correct ID from selected row before updating
                     p.setId(view.getSelectedId());
-                    productService.updateProduct(p); // Gọi Service cập nhật
-                    view.updateRow(selectedRow, p);  // Update View
+
+                    productService.updateProduct(p); // Call service to update
+
+                    view.updateRow(selectedRow, p);  // Update view
+
                     view.clearForm();
-                    view.showMessage("Cập nhật thành công!");
+
+                    view.showMessage("Product updated successfully!");
+
                 } catch (Exception ex) {
                     view.showMessage(ex.getMessage());
                 }
+
             } else {
-                view.showMessage("Hãy chọn một dòng trên bảng để sửa!");
+                view.showMessage("Please select a row to edit!");
             }
         }
     }
@@ -96,19 +104,28 @@ public class ProductController {
     class DeleteProductListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+
             int selectedRow = view.getSelectedRow();
+
             if (selectedRow >= 0) {
                 try {
+
                     BigInteger idToRemove = view.getSelectedId();
-                    productService.deleteProduct(idToRemove); // Gọi Service xóa
-                    view.removeRow(selectedRow);              // Update View xóa dòng
+
+                    productService.deleteProduct(idToRemove); // Call service to delete
+
+                    view.removeRow(selectedRow);               // Remove row from view
+
                     view.clearForm();
-                    view.showMessage("Xóa sản phẩm thành công!");
+
+                    view.showMessage("Product deleted successfully!");
+
                 } catch (Exception ex) {
                     view.showMessage(ex.getMessage());
                 }
+
             } else {
-                view.showMessage("Hãy chọn một dòng trên bảng để xóa!");
+                view.showMessage("Please select a row to delete!");
             }
         }
     }
@@ -116,40 +133,60 @@ public class ProductController {
     class TableSelectionListener implements ListSelectionListener {
         @Override
         public void valueChanged(ListSelectionEvent e) {
+
             if (!e.getValueIsAdjusting() && view.getSelectedRow() != -1) {
+
                 BigInteger id = view.getSelectedId();
+
                 for(Product p : productService.getAllProducts()) {
+
                     if(p.getId().equals(id)) {
+
                         view.setFormInfo(p);
+
                         break;
                     }
                 }
             }
         }
     }
+
     class DetailInTableListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
+
                 int clickedRow = Integer.parseInt(e.getActionCommand());
+
                 BigInteger selectedId = view.getIdAtRow(clickedRow);
 
                 Product selectedProduct = null;
+
                 for (Product p : productService.getAllProducts()) {
+
                     if (p.getId().equals(selectedId)) {
+
                         selectedProduct = p;
+
                         break;
                     }
                 }
 
                 if (selectedProduct != null) {
+
                     ProductDetailView detailView = new ProductDetailView(view, selectedProduct);
-                    ProductDetailController detailController = new ProductDetailController(detailView, selectedProduct);
+
+                    ProductDetailController detailController =
+                            new ProductDetailController(detailView, selectedProduct);
+
                     detailView.setVisible(true);
                 }
+
             } catch (Exception ex) {
-                view.showMessage("Lỗi khi mở chi tiết: " + ex.getMessage());
+
+                view.showMessage("Error opening product detail: " + ex.getMessage());
             }
         }
     }
+
 }

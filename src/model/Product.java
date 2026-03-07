@@ -20,14 +20,28 @@ public class Product {
     private List<ProductSku> skus;
 
     public Product() {
+        this.createdAt = LocalDateTime.now();
+        this.active = true;
     }
 
     public Product(BigInteger id, String productCode, String name) {
-        this.id = id;
-        this.productCode = productCode;
-        this.name = name;
+        setId(id);
+        setProductCode(productCode);
+        setName(name);
         this.createdAt = LocalDateTime.now();
         this.active = true;
+    }
+
+    public Product(BigInteger id, String productCode, String name, String description,
+                   String category, String brand, boolean active) {
+        setId(id);
+        setProductCode(productCode);
+        setName(name);
+        setDescription(description);
+        setCategory(category);
+        setBrand(brand);
+        setActive(active);
+        this.createdAt = LocalDateTime.now();
     }
 
     public BigInteger getId() {
@@ -35,6 +49,9 @@ public class Product {
     }
 
     public void setId(BigInteger id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Product ID cannot be null");
+        }
         this.id = id;
     }
 
@@ -43,7 +60,11 @@ public class Product {
     }
 
     public void setProductCode(String productCode) {
-        this.productCode = productCode;
+        if (productCode == null || productCode.trim().isEmpty()) {
+            throw new IllegalArgumentException("Product code cannot be empty");
+        }
+        this.productCode = productCode.trim();
+        touchUpdateTime();
     }
 
     public String getName() {
@@ -51,7 +72,11 @@ public class Product {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Product name cannot be empty");
+        }
+        this.name = name.trim();
+        touchUpdateTime();
     }
 
     public String getDescription() {
@@ -59,7 +84,12 @@ public class Product {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        if (description != null) {
+            this.description = description.trim();
+        } else {
+            this.description = null;
+        }
+        touchUpdateTime();
     }
 
     public String getCategory() {
@@ -67,7 +97,12 @@ public class Product {
     }
 
     public void setCategory(String category) {
-        this.category = category;
+        if (category != null) {
+            this.category = category.trim();
+        } else {
+            this.category = null;
+        }
+        touchUpdateTime();
     }
 
     public String getBrand() {
@@ -75,7 +110,12 @@ public class Product {
     }
 
     public void setBrand(String brand) {
-        this.brand = brand;
+        if (brand != null) {
+            this.brand = brand.trim();
+        } else {
+            this.brand = null;
+        }
+        touchUpdateTime();
     }
 
     public boolean isActive() {
@@ -84,6 +124,7 @@ public class Product {
 
     public void setActive(boolean active) {
         this.active = active;
+        touchUpdateTime();
     }
 
     public LocalDateTime getCreatedAt() {
@@ -91,6 +132,9 @@ public class Product {
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
+        if (createdAt == null) {
+            throw new IllegalArgumentException("CreatedAt cannot be null");
+        }
         this.createdAt = createdAt;
     }
 
@@ -108,5 +152,23 @@ public class Product {
 
     public void setSkus(List<ProductSku> skus) {
         this.skus = skus;
+    }
+
+    private void touchUpdateTime() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", productCode='" + productCode + '\'' +
+                ", name='" + name + '\'' +
+                ", category='" + category + '\'' +
+                ", brand='" + brand + '\'' +
+                ", active=" + active +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }
