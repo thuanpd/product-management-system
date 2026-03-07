@@ -19,13 +19,27 @@ public class ProductSkuPrice {
     private ProductSku productSku;
 
     public ProductSkuPrice() {
+        this.startDate = LocalDateTime.now();
+        this.active = true;
     }
 
     public ProductSkuPrice(BigInteger id, BigDecimal price, ProductSku productSku) {
-        this.id = id;
-        this.price = price;
-        this.productSku = productSku;
+        setId(id);
+        setPrice(price);
+        setProductSku(productSku);
         this.startDate = LocalDateTime.now();
+        this.active = true;
+    }
+
+    public ProductSkuPrice(BigInteger id, BigDecimal price, BigDecimal originalPrice, String currency,
+                           LocalDateTime startDate, LocalDateTime endDate, ProductSku productSku) {
+        setId(id);
+        setPrice(price);
+        setOriginalPrice(originalPrice);
+        setCurrency(currency);
+        setStartDate(startDate);
+        setEndDate(endDate);
+        setProductSku(productSku);
         this.active = true;
     }
 
@@ -34,6 +48,9 @@ public class ProductSkuPrice {
     }
 
     public void setId(BigInteger id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Price ID cannot be null");
+        }
         this.id = id;
     }
 
@@ -42,6 +59,9 @@ public class ProductSkuPrice {
     }
 
     public void setPrice(BigDecimal price) {
+        if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Price must be >= 0");
+        }
         this.price = price;
     }
 
@@ -50,6 +70,9 @@ public class ProductSkuPrice {
     }
 
     public void setOriginalPrice(BigDecimal originalPrice) {
+        if (originalPrice != null && originalPrice.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Original price must be >= 0");
+        }
         this.originalPrice = originalPrice;
     }
 
@@ -58,7 +81,10 @@ public class ProductSkuPrice {
     }
 
     public void setCurrency(String currency) {
-        this.currency = currency;
+        if (currency == null || currency.trim().isEmpty()) {
+            throw new IllegalArgumentException("Currency cannot be empty");
+        }
+        this.currency = currency.trim().toUpperCase();
     }
 
     public LocalDateTime getStartDate() {
@@ -66,6 +92,9 @@ public class ProductSkuPrice {
     }
 
     public void setStartDate(LocalDateTime startDate) {
+        if (startDate == null) {
+            throw new IllegalArgumentException("Start date cannot be null");
+        }
         this.startDate = startDate;
     }
 
@@ -74,6 +103,9 @@ public class ProductSkuPrice {
     }
 
     public void setEndDate(LocalDateTime endDate) {
+        if (endDate != null && startDate != null && endDate.isBefore(startDate)) {
+            throw new IllegalArgumentException("End date cannot be before start date");
+        }
         this.endDate = endDate;
     }
 
@@ -90,6 +122,22 @@ public class ProductSkuPrice {
     }
 
     public void setProductSku(ProductSku productSku) {
+        if (productSku == null) {
+            throw new IllegalArgumentException("ProductSku cannot be null");
+        }
         this.productSku = productSku;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductSkuPrice{" +
+                "id=" + id +
+                ", price=" + price +
+                ", originalPrice=" + originalPrice +
+                ", currency='" + currency + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", active=" + active +
+                '}';
     }
 }
