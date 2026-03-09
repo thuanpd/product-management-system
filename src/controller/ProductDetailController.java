@@ -11,8 +11,8 @@ import model.ProductSku;
 import model.ProductSkuPrice;
 import service.IProductSkuPriceService;
 import service.IProductSkuService;
-import service.impl.ProductSkuPriceServiceImpl;
-import service.impl.ProductSkuServiceImpl;
+import service.ProductSkuPriceServiceImpl;
+import service.ProductSkuServiceImpl;
 import view.ProductDetailView;
 
 public class ProductDetailController {
