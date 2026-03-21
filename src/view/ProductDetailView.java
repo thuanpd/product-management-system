@@ -31,7 +31,7 @@ public class ProductDetailView extends JDialog {
     private DefaultTableModel priceTableModel;
 
     public ProductDetailView(JFrame parent, Product currentProduct) {
-        super(parent, "Chi Tiết Sản Phẩm: " + currentProduct.getName(), true);
+        super(parent, "Product details: " + currentProduct.getName(), true);
         this.currentProduct = currentProduct;
         this.setSize(900, 600);
         this.setLocationRelativeTo(parent);
@@ -42,8 +42,8 @@ public class ProductDetailView extends JDialog {
     private void initUI() {
         tabbedPane = new JTabbedPane();
 
-        tabbedPane.addTab("1. Quản Lý Thuộc Tính (SKU)", createSkuTab());
-        tabbedPane.addTab("2. Quản Lý Lịch Sử Giá", createPriceTab());
+        tabbedPane.addTab("1. SKU Management (SKU)", createSkuTab());
+        tabbedPane.addTab("2. Price History Management", createPriceTab());
 
         this.setLayout(new BorderLayout());
         this.add(tabbedPane, BorderLayout.CENTER);
@@ -55,31 +55,31 @@ public class ProductDetailView extends JDialog {
         JPanel inputPanel = new JPanel(new GridLayout(5, 4, 10, 10));
         inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
-        inputPanel.add(new JLabel("ID SKU (Trống):")); txtSkuId = new JTextField(); inputPanel.add(txtSkuId);
-        inputPanel.add(new JLabel("Mã SKU:")); txtSkuCode = new JTextField(); inputPanel.add(txtSkuCode);
-        inputPanel.add(new JLabel("Màu sắc:")); txtColor = new JTextField(); inputPanel.add(txtColor);
-        inputPanel.add(new JLabel("Kích thước:")); txtSize = new JTextField(); inputPanel.add(txtSize);
-        inputPanel.add(new JLabel("Chất liệu:")); txtMaterial = new JTextField(); inputPanel.add(txtMaterial);
-        inputPanel.add(new JLabel("Tồn kho:")); txtQty = new JTextField("0"); inputPanel.add(txtQty);
-        inputPanel.add(new JLabel("Trọng lượng:")); txtWeight = new JTextField("0.0"); inputPanel.add(txtWeight);
-        inputPanel.add(new JLabel("Mã vạch:")); txtBarcode = new JTextField(); inputPanel.add(txtBarcode);
+        inputPanel.add(new JLabel("SKU ID (Auto):")); txtSkuId = new JTextField(); inputPanel.add(txtSkuId);
+        inputPanel.add(new JLabel("SKU Code:")); txtSkuCode = new JTextField();inputPanel.add(txtSkuCode);
+        inputPanel.add(new JLabel("Color:")); txtColor = new JTextField();inputPanel.add(txtColor);
+        inputPanel.add(new JLabel("Size:")); txtSize = new JTextField();inputPanel.add(txtSize);
+        inputPanel.add(new JLabel("Material:")); txtMaterial = new JTextField();inputPanel.add(txtMaterial);
+        inputPanel.add(new JLabel("Stock Quantity:")); txtQty = new JTextField("0");inputPanel.add(txtQty);
+        inputPanel.add(new JLabel("Weight:")); txtWeight = new JTextField("0.0");inputPanel.add(txtWeight);
+        inputPanel.add(new JLabel("Barcode:")); txtBarcode = new JTextField(); inputPanel.add(txtBarcode);
 
-        inputPanel.add(new JLabel("Trạng thái:"));
-        chkSkuActive = new JCheckBox("Đang bán"); chkSkuActive.setSelected(true);
+        inputPanel.add(new JLabel("Status:"));
+        chkSkuActive = new JCheckBox("Selling"); chkSkuActive.setSelected(true);
         inputPanel.add(chkSkuActive);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
-        btnAddSku = new JButton("Thêm SKU");
-        btnEditSku = new JButton("Sửa SKU");
-        btnDeleteSku = new JButton("Xóa SKU");
-        btnClearSku = new JButton("Làm Mới");
+        btnAddSku = new JButton("Add SKU");
+        btnEditSku = new JButton("Edit SKU");
+        btnDeleteSku = new JButton("Delete SKU");
+        btnClearSku = new JButton("Clear");
         buttonPanel.add(btnAddSku); buttonPanel.add(btnEditSku); buttonPanel.add(btnDeleteSku); buttonPanel.add(btnClearSku);
 
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.add(inputPanel, BorderLayout.CENTER);
         topPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        String[] columns = {"ID", "Mã SKU", "Màu", "Size", "Tồn Kho", "Hoạt động"};
+        String[] columns = {"ID", "SKU Code", "Color", "Size", "Stock", "Active"};
         skuTableModel = new DefaultTableModel(columns, 0) { @Override public boolean isCellEditable(int r, int c) { return false; }};
         skuTable = new JTable(skuTableModel);
 
@@ -94,32 +94,32 @@ public class ProductDetailView extends JDialog {
         JPanel inputPanel = new JPanel(new GridLayout(3, 4, 10, 10));
         inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
-        inputPanel.add(new JLabel("ID Giá (Trống):")); txtPriceId = new JTextField(); inputPanel.add(txtPriceId);
+        inputPanel.add(new JLabel("Price ID:")); txtPriceId = new JTextField(); inputPanel.add(txtPriceId);
 
-        inputPanel.add(new JLabel("Chọn mã SKU:"));
+        inputPanel.add(new JLabel("Select SKU Code:"));
         cbSkuSelector = new JComboBox<>();
         inputPanel.add(cbSkuSelector);
 
-        inputPanel.add(new JLabel("Giá Bán Hiện Tại:")); txtPrice = new JTextField(); inputPanel.add(txtPrice);
-        inputPanel.add(new JLabel("Giá Gốc:")); txtOriginalPrice = new JTextField(); inputPanel.add(txtOriginalPrice);
-        inputPanel.add(new JLabel("Tiền Tệ:")); txtCurrency = new JTextField("VND"); inputPanel.add(txtCurrency);
+        inputPanel.add(new JLabel("Current Price:")); txtPrice = new JTextField(); inputPanel.add(txtPrice);
+        inputPanel.add(new JLabel("Original Price:")); txtOriginalPrice = new JTextField(); inputPanel.add(txtOriginalPrice);
+        inputPanel.add(new JLabel("Currency:")); txtCurrency = new JTextField("VND"); inputPanel.add(txtCurrency);
 
-        inputPanel.add(new JLabel("Trạng thái:"));
-        chkPriceActive = new JCheckBox("Đang áp dụng"); chkPriceActive.setSelected(true);
+        inputPanel.add(new JLabel("Status:"));
+        chkPriceActive = new JCheckBox("Active"); chkPriceActive.setSelected(true);
         inputPanel.add(chkPriceActive);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
-        btnAddPrice = new JButton("Thêm Giá");
-        btnEditPrice = new JButton("Sửa Giá");
-        btnDeletePrice = new JButton("Xóa Giá");
-        btnClearPrice = new JButton("Làm Mới");
+        btnAddPrice = new JButton("Add Price");
+        btnEditPrice = new JButton("Edit Price");
+        btnDeletePrice = new JButton("Delete Price");
+        btnClearPrice = new JButton("Clear");
         buttonPanel.add(btnAddPrice); buttonPanel.add(btnEditPrice); buttonPanel.add(btnDeletePrice); buttonPanel.add(btnClearPrice);
 
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.add(inputPanel, BorderLayout.CENTER);
         topPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        String[] columns = {"ID", "Mã SKU", "Giá Bán", "Giá Gốc", "Tiền Tệ", "Áp dụng"};
+        String[] columns = {"ID", "SKU Code", "Status", "Original Price", "Currency", "Active"};
         priceTableModel = new DefaultTableModel(columns, 0) { @Override public boolean isCellEditable(int r, int c) { return false; }};
         priceTable = new JTable(priceTableModel);
 
@@ -145,7 +145,7 @@ public class ProductDetailView extends JDialog {
             sku.setProduct(currentProduct);
             return sku;
         } catch (NumberFormatException e) {
-            showMessage("Tồn kho và Trọng lượng phải là số!"); return null;
+            showMessage("Stock quantity and weight must be numeric!"); return null;
         }
     }
 
@@ -175,7 +175,7 @@ public class ProductDetailView extends JDialog {
         skuTableModel.setValueAt(sku.getColor(), rowIndex, 2);
         skuTableModel.setValueAt(sku.getSize(), rowIndex, 3);
         skuTableModel.setValueAt(sku.getQuantityInStock(), rowIndex, 4);
-        skuTableModel.setValueAt(sku.isActive() ? "Có" : "Không", rowIndex, 5);
+        skuTableModel.setValueAt(sku.isActive() ? "Yes" : "No", rowIndex, 5);
     }
 
     public void removeSkuRow(int rowIndex) {
@@ -217,7 +217,7 @@ public class ProductDetailView extends JDialog {
             p.setActive(chkPriceActive.isSelected());
             return p;
         } catch (Exception e) {
-            showMessage("Giá tiền không hợp lệ!"); return null;
+            showMessage("Invalid price value!"); return null;
         }
     }
 
@@ -254,7 +254,7 @@ public class ProductDetailView extends JDialog {
         priceTableModel.setValueAt(p.getPrice(), rowIndex, 2);
         priceTableModel.setValueAt(p.getOriginalPrice(), rowIndex, 3);
         priceTableModel.setValueAt(p.getCurrency(), rowIndex, 4);
-        priceTableModel.setValueAt(p.isActive() ? "Có" : "Không", rowIndex, 5);
+        priceTableModel.setValueAt(p.isActive() ? "Yes" : "No", rowIndex, 5);
     }
 
     public void removePriceRow(int rowIndex) {
