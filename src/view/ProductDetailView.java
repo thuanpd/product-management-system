@@ -94,7 +94,8 @@ public class ProductDetailView extends JDialog {
         JPanel inputPanel = new JPanel(new GridLayout(3, 4, 10, 10));
         inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
-        inputPanel.add(new JLabel("Price ID:")); txtPriceId = new JTextField(); inputPanel.add(txtPriceId);
+        inputPanel.add(new JLabel("Price ID:")); txtPriceId = new JTextField();
+        inputPanel.add(txtPriceId);
 
         inputPanel.add(new JLabel("Select SKU Code:"));
         cbSkuSelector = new JComboBox<>();
@@ -119,7 +120,7 @@ public class ProductDetailView extends JDialog {
         topPanel.add(inputPanel, BorderLayout.CENTER);
         topPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        String[] columns = {"ID", "SKU Code", "Status", "Original Price", "Currency", "Active"};
+        String[] columns = {"ID", "SKU Code", "Current Price", "Original Price", "Currency", "Active"};
         priceTableModel = new DefaultTableModel(columns, 0) { @Override public boolean isCellEditable(int r, int c) { return false; }};
         priceTable = new JTable(priceTableModel);
 
@@ -167,7 +168,7 @@ public class ProductDetailView extends JDialog {
     }
 
     public void addSkuRow(ProductSku sku) {
-        skuTableModel.addRow(new Object[]{sku.getId(), sku.getSkuCode(), sku.getColor(), sku.getSize(), sku.getQuantityInStock(), sku.isActive() ? "Có" : "Không"});
+        skuTableModel.addRow(new Object[]{sku.getId(), sku.getSkuCode(), sku.getColor(), sku.getSize(), sku.getQuantityInStock(), sku.isActive() ? "Yes" : "No"});
     }
 
     public void updateSkuRow(int rowIndex, ProductSku sku) {
@@ -246,7 +247,7 @@ public class ProductDetailView extends JDialog {
     }
 
     public void addPriceRow(ProductSkuPrice p) {
-        priceTableModel.addRow(new Object[]{p.getId(), p.getProductSku().getSkuCode(), p.getPrice(), p.getOriginalPrice(), p.getCurrency(), p.isActive() ? "Có" : "Không"});
+        priceTableModel.addRow(new Object[]{p.getId(), p.getProductSku().getSkuCode(), p.getPrice(), p.getOriginalPrice(), p.getCurrency(), p.isActive() ? "Yes" : "No"});
     }
 
     public void updatePriceRow(int rowIndex, ProductSkuPrice p) {

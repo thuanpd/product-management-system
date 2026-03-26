@@ -1,3 +1,4 @@
 id,productCode,name,description,category,brand,active,createdAt,updatedAt
-1,PA001,Lenovo yoga,App Lenovo yoga,laptop,Lenovo,true,2026-02-28T10:34:59.6171258,
-2,PA002,Asus Zenbook,Asus Zenbook 512GB,laptop,Asus,true,2026-02-28T13:22:51.7776693,
+1,PA0001,Laptop Asus,Laptop Asus Đài Loan,Laptop,Asus,true,2026-03-26T21:27:40.2987536,2026-03-26T21:35:45.3303829
+2,PA0002,Laptop Lenovo,Laptop Lenovo Đài Loan,Laptop,Lenovo,true,2026-03-26T21:36:27.1064551,2026-03-26T21:36:27.1054485
+3,PA0003,Laptop Acer,Laptop Acer Trung Quốc,Laptop,Acer,true,2026-03-26T21:37:11.6237814,2026-03-26T21:37:11.6237814
