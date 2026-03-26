@@ -1,26 +1,54 @@
-# product-management-system
-product-management-system OOP
+# 📦 Product Management System (Java Swing & CSV)
 
-src/
- ├── com.project.model        # Chứa các lớp đối tượng (Entity)
- ├── com.project.service      # Chứa logic xử lý nghiệp vụ
- ├── com.project.view         # Chứa giao diện Java Swing (JFrame, JPanel)
- ├── com.project.repository   # Chứa code xử lý file/database
- └── com.project.main         # Lớp chứa hàm main để chạy ứng dụng
+## 📝 Giới thiệu
+Đây là dự án phần mềm quản lý hàng hóa tập trung vào việc tối ưu hóa quy trình lưu trữ và truy xuất thông tin sản phẩm cho các cửa hàng bán lẻ. Hệ thống được xây dựng trên nền tảng **Java Swing**, sử dụng kiến trúc **MVC + Service** và lưu trữ dữ liệu bền vững qua các tệp tin **CSV**.
 
- 1. Nhóm chức năng cốt lõi (CRUD)
-  Đây là những chức năng bắt buộc phải có để ứng dụng hoạt động:
-  Thêm sản phẩm mới: Nhập thông tin (Tên, Mã, Giá, Số lượng, Danh mục) và lưu vào danh sách.
-  Hiển thị danh sách: Xuất toàn bộ sản phẩm lên JTable với giao diện ngăn nắp.
-  Sửa thông tin: Chọn một sản phẩm từ bảng và cập nhật các thông số của nó.
-  Xóa sản phẩm: Loại bỏ sản phẩm khỏi hệ thống (nên có hộp thoại JOptionPane để xác nhận "Bạn có chắc chắn muốn xóa không?").
-2. Nhóm chức năng Tìm kiếm & Sắp xếp (OOP Logic)
-Phần này giúp bạn ghi điểm nhờ khả năng xử lý thuật toán trên ArrayList hoặc Vector:
-  Tìm kiếm:
-  Tìm theo tên (chứa từ khóa).
-  Tìm theo khoảng giá (ví dụ: từ 500k - 1 triệu).
-  Lọc theo danh mục (ví dụ: chỉ hiện đồ điện tử).
-  Sắp xếp:
-  Sắp xếp theo giá tăng dần/giảm dần.
-  Sắp xếp theo tên từ A-Z.
-  Sắp xếp theo số lượng tồn kho.
+Điểm mạnh của dự án là khả năng quản lý sản phẩm theo mô hình phân cấp: **Sản phẩm (Master) -> Biến thể (SKU) -> Lịch sử giá (Price History)**.
+
+## ✨ Tính năng nổi bật
+* **Quản lý đa phân loại:** Hỗ trợ một sản phẩm có nhiều biến thể (màu sắc, kích thước, chất liệu...).
+* **Theo dõi giá chuyên sâu:** Tách biệt giá bán và giá gốc, hỗ trợ quản lý theo thời gian (`startDate`, `endDate`).
+* **Kiểm soát dữ liệu chặt chẽ:** * Sử dụng `BigInteger` cho ID để không giới hạn quy mô.
+    * Sử dụng `BigDecimal` cho tiền tệ để đảm bảo độ chính xác tuyệt đối.
+    * Tự động ghi dấu thời gian `createdAt` và `updatedAt`.
+* **Giao diện Master-Detail:** Chuyển đổi mượt mà giữa danh mục tổng quát và chi tiết SKU thông qua `JTabbedPane`.
+
+## 🏗 Kiến trúc hệ thống (MVC + Service)
+Dự án tuân thủ nghiêm ngặt mô hình tách biệt các tầng xử lý:
+* **Model:** Định nghĩa thực thể và ràng buộc dữ liệu (`Product`, `ProductSku`, `ProductSkuPrice`).
+* **View:** Thành phần giao diện người dùng bằng Java Swing.
+* **Controller:** Điều phối luồng hoạt động giữa giao diện và logic.
+* **Service:** Lớp xử lý nghiệp vụ chính và thao tác trực tiếp với các file CSV trong thư mục `data/`.
+
+## 📂 Cấu trúc thư mục
+```text
+product-management-system/
+├── data/               # Cơ sở dữ liệu CSV
+│   ├── products.csv    # Thông tin sản phẩm cha
+│   ├── skus.csv        # Chi tiết các biến thể SKU
+│   └── sku_prices.csv  # Lịch sử biến động giá
+├── src/
+│   ├── controller/     # Lớp điều phối sự kiện
+│   ├── model/          # Các lớp thực thể (Entity)
+│   ├── service/        # Xử lý nghiệp vụ & File I/O
+│   ├── view/           # Giao diện JFrame, JPanel
+│   └── Main.java       # Điểm khởi chạy (Entry Point)
+└── README.md
+```
+
+## 🛠 Công nghệ sử dụng
+* **Ngôn ngữ:** Java 17+
+* **Thư viện:** Java Swing, AWT.
+* **Lưu trữ:** Flat-file CSV (UTF-8).
+* **Thời gian:** `java.time.LocalDateTime` (ISO-8601).
+
+## 🚀 Hướng dẫn cài đặt & Chạy
+1.  Đảm bảo máy tính đã cài đặt **JDK 17** hoặc mới hơn.
+2.  Tải mã nguồn dự án về máy.
+3.  Mở dự án bằng IDE (IntelliJ IDEA, NetBeans, hoặc Eclipse).
+4.  Chạy file `src/Main.java`.
+5.  Dữ liệu sẽ được tự động load từ thư mục `data/`.
+
+---
+**Phát triển bởi:** ThuanPD  
+**Ngày hoàn thiện:** 20/03/2026
